@@ -21,11 +21,27 @@ ResumeForge is a dynamic web-based resume builder that allows users to create pr
 
 🔹 Live Demo
 
+https://youtu.be/dfexw5pS6-g?si=iBeS7z6_is2pyaZO
 
 🔹 Screenshots
 
+🛠️ Editor Interface
+![Editor](editor.png)
 
- 🔹 Future Improvements
+ 📄 Resume Preview
+![Resume](resumePreview.png)
+
+🎨 Modern Template
+![Template1](ResumeTemplate1.png)
+
+ 🎨 Minimal Template
+![Template2](ResumeTemplate2.png)
+
+🧑‍💼 Professional Template
+![Template3](ResumeTemplate3.png)
+
+
+🔹 Future Improvements
 
 * Add backend for data storage
 * Improve AI suggestions with real API integration
