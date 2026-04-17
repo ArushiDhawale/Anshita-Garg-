@@ -48,7 +48,7 @@ A modern, responsive resume builder that allows users to create, preview, and ex
 ---
 🚀 Live Demo
 
-(Will be added soon)
+https://anshita14garg-blip.github.io/Anshita-Garg-/
 
 ---
 
