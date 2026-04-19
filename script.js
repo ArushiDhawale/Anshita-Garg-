@@ -23,6 +23,13 @@ function v(id) { const e = document.getElementById(id); return e ? e.value.trim(
 function esc(s) { if (!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function live() { renderResume(); updateScore(); }
 
+function formatMonthYear(val) {
+  if (!val || !/^\d{4}-\d{2}$/.test(val)) return val;
+  const [y, m] = val.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m,10)-1]} ${y}`;
+}
+
 /* ── NAVIGATION ── */
 function showPanel(name, el) {
   document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
@@ -116,8 +123,14 @@ function addExp(role='', company='', start='', end='', loc='', desc='') {
       <div class="field"><label>Company</label><input id="${id}-company" value="${esc(company)}" placeholder="Google"></div>
     </div>
     <div class="row3">
-      <div class="field"><label>Start</label><input id="${id}-start" value="${esc(start)}" placeholder="Jun 2022"></div>
-      <div class="field"><label>End</label><input id="${id}-end" value="${esc(end)}" placeholder="Present"></div>
+      <div class="field"><label>Start</label><input type="month" id="${id}-start" value="${esc(start)}"></div>
+      <div class="field">
+        <label>End</label>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="month" id="${id}-end" value="${esc(end)}" style="flex:1">
+          <label style="display:flex;align-items:center;gap:4px;text-transform:none;font-weight:500;font-size:11px;cursor:pointer"><input type="checkbox" id="${id}-present" onchange="const el=document.getElementById('${id}-end'); el.disabled=this.checked; if(this.checked) el.value=''; live();" style="width:auto"> Present</label>
+        </div>
+      </div>
       <div class="field"><label>Location</label><input id="${id}-loc" value="${esc(loc)}" placeholder="Remote"></div>
     </div>
     <div class="field">
@@ -215,7 +228,19 @@ function getExpHtml() {
     const id = card.dataset.id;
     const role = v(id+'-role'), company = v(id+'-company');
     if (!role && !company) return;
-    const dateStr = (v(id+'-start') || v(id+'-end')) ? `${esc(v(id+'-start'))} – ${esc(v(id+'-end'))}` : '';
+    
+    let startVal = v(id+'-start');
+    let endVal = v(id+'-end');
+    const isPresent = document.getElementById(id+'-present')?.checked;
+    
+    let formattedStart = formatMonthYear(startVal);
+    let formattedEnd = isPresent ? 'Present' : formatMonthYear(endVal);
+    
+    let dateStr = '';
+    if (formattedStart && formattedEnd) dateStr = `${esc(formattedStart)} – ${esc(formattedEnd)}`;
+    else if (formattedStart) dateStr = esc(formattedStart);
+    else if (formattedEnd) dateStr = esc(formattedEnd);
+
     h += `<div class="r-entry"><div class="r-row"><span class="r-role">${esc(role)}</span><span class="r-date">${dateStr}</span></div>`;
     if (company) h += `<div class="r-org">${esc(company)}${v(id+'-loc') ? ' · '+esc(v(id+'-loc')) : ''}</div>`;
     if (v(id+'-desc')) h += `<div class="r-desc">${esc(v(id+'-desc'))}</div>`;
