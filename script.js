@@ -5,6 +5,18 @@ let expCount = 0, eduCount = 0, projCount = 0, certCount = 0, sbCount = 0;
 let hiddenSections = new Set();
 let showSkillBars = true;
 let toastTimer;
+let profilePicData = '';
+
+function loadProfilePic(e) {
+  const file = e.target.files[0];
+  if (!file) { profilePicData = ''; live(); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    profilePicData = e.target.result;
+    live();
+  };
+  reader.readAsDataURL(file);
+}
 
 /* ── HELPERS ── */
 function v(id) { const e = document.getElementById(id); return e ? e.value.trim() : ''; }
@@ -293,10 +305,16 @@ function renderResume() {
 
 function renderModern(paper) {
   const name = [v('firstName'), v('lastName')].filter(Boolean).join(' ') || 'Your Name';
+  const picHtml = profilePicData ? `<img src="${profilePicData}" class="r-profile-pic">` : '';
   let html = `<div class="r-accent-bar"></div><div class="r-body">
-    <div class="r-name">${esc(name)}</div>
-    ${v('jobTitle') ? `<div class="r-jobtitle">${esc(v('jobTitle'))}</div>` : ''}
-    <div class="r-contacts">${getContactsHtml()}</div>`;
+    <div class="r-header-wrap">
+      ${picHtml}
+      <div class="r-header-text">
+        <div class="r-name">${esc(name)}</div>
+        ${v('jobTitle') ? `<div class="r-jobtitle">${esc(v('jobTitle'))}</div>` : ''}
+        <div class="r-contacts">${getContactsHtml()}</div>
+      </div>
+    </div>`;
   if (v('summary')) html += `<div class="r-section"><div class="r-sec-head"><span class="r-sec-title">Summary</span><span class="r-sec-line"></span></div><div class="r-summary-text">${esc(v('summary'))}</div></div>`;
   html += getExpHtml() + getEduHtml() + getProjHtml() + getCertHtml() + getSkillsMainHtml() + '</div>';
   paper.innerHTML = html;
@@ -304,10 +322,16 @@ function renderModern(paper) {
 
 function renderMinimal(paper) {
   const name = [v('firstName'), v('lastName')].filter(Boolean).join(' ') || 'Your Name';
+  const picHtml = profilePicData ? `<img src="${profilePicData}" class="r-profile-pic">` : '';
   let html = `<div class="r-body">
-    <div class="r-name">${esc(name)}</div>
-    ${v('jobTitle') ? `<div class="r-jobtitle">${esc(v('jobTitle'))}</div>` : ''}
-    <div class="r-contacts">${getContactsHtml()}</div>`;
+    <div class="r-header-wrap">
+      ${picHtml}
+      <div class="r-header-text">
+        <div class="r-name">${esc(name)}</div>
+        ${v('jobTitle') ? `<div class="r-jobtitle">${esc(v('jobTitle'))}</div>` : ''}
+        <div class="r-contacts">${getContactsHtml()}</div>
+      </div>
+    </div>`;
   if (v('summary')) html += `<div class="r-section"><div class="r-sec-title">About</div><div class="r-summary-text">${esc(v('summary'))}</div></div>`;
   html += getExpHtml() + getEduHtml() + getProjHtml() + getCertHtml() + getSkillsMainHtml() + '</div>';
   paper.innerHTML = html;
@@ -317,7 +341,9 @@ function renderProfessional(paper) {
   const name = [v('firstName'), v('lastName')].filter(Boolean).join(' ') || 'Your Name';
   const bars = getSkillBars();
   const extra = v('extraSkills').split(',').map(s=>s.trim()).filter(Boolean);
+  const picHtml = profilePicData ? `<img src="${profilePicData}" class="r-profile-pic">` : '';
   let sidebar = `<div class="r-sidebar">
+    ${picHtml}
     <div class="r-name">${esc(name)}</div>
     ${v('jobTitle') ? `<div class="r-jobtitle">${esc(v('jobTitle'))}</div>` : ''}
     <div class="r-contacts">${getContactsHtml('<br>')}</div>`;
